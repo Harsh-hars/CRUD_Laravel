@@ -6,7 +6,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -15,8 +16,17 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::orderBy('created_at', 'desc')->get();
-        return view('products.index', ['products' => $products]);
+        // if (!Auth::check()) {
+        //     return redirect()->route('login');
+        // }
+
+
+        if (Auth::user()->usertype == 'user') {
+            $products = Product::orderBy('created_at', 'desc')->get();
+            return view('products.index', ['products' => $products]);
+        }
+
+        // return view('welcome');
     }
 
     /**

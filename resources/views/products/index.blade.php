@@ -14,8 +14,28 @@
 </head>
 
 <body>
-    <div class="p-2 bg-dark text-center text-white">
+
+    <div class="p-2 bg-dark text-center text-white d-flex justify-content-between">
         <h3>Laravel</h2>
+            @auth
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        {{ Auth::user()->name }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            @else
+                <a class="btn btn-outline-primary" href="{{ route('login') }}">Login</a>
+                <a class="btn btn-primary" href="{{ route('register') }}">Register</a>
+            @endauth
     </div>
     <div class="container">
 
@@ -56,34 +76,38 @@
                             @if ($products->isNotEmpty())
                                 @foreach ($products as $product)
                                     <tr>
-                                        <td>{{$product->id}}</td>
-                                        <td><img class="rounded" src="{{asset('uploads/products/'.$product->image)}}" width="100"></td>
-                                        <td>{{$product->name}}</td>
-                                        <td>{{$product->sku}}</td>
-                                        <td>{{$product->price}}</td>
+                                        <td>{{ $product->id }}</td>
+                                        <td><img class="rounded"
+                                                src="{{ asset('uploads/products/' . $product->image) }}" width="100">
+                                        </td>
+                                        <td>{{ $product->name }}</td>
+                                        <td>{{ $product->sku }}</td>
+                                        <td>{{ $product->price }}</td>
                                         <td>
-                                            @if($product->status == 'Active')
-                                            <span class="badge bg-success">Active</span>
+                                            @if ($product->status == 'Active')
+                                                <span class="badge bg-success">Active</span>
                                             @else
-                                            <span class="badge bg-danger">InActive</span>
+                                                <span class="badge bg-danger">InActive</span>
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{route('products.edit', $product->id)}}" class="btn btn-dark btn-sm">Edit</a>
-                                            <form method="POST" action="{{route('products.destroy', $product->id)}}">
+                                            <a href="{{ route('products.edit', $product->id) }}"
+                                                class="btn btn-dark btn-sm">Edit</a>
+                                            <form method="POST"
+                                                action="{{ route('products.destroy', $product->id) }}">
 
                                                 @csrf
                                                 @method('DELETE')
-                                                 <button class="btn btn-danger btn-sm">Delete</button>
+                                                <button class="btn btn-danger btn-sm">Delete</button>
                                             </form>
-                                           
+
                                         </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <td colspan="7" class="text-center">No Product Found</td>
                             @endif
-                           
+
                         </tbody>
                     </table>
                 </div>
